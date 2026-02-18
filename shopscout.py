@@ -85,14 +85,22 @@ def research_product(query: str) -> str:
 
         for attempt in range(3):
             try:
-                response = client.messages.create(
+                response = client.beta.messages.create(
                     model="claude-sonnet-4-6",
-                    max_tokens=4096,
-                    system=SYSTEM_PROMPT,
+                    max_tokens=2000,
+                    betas=["prompt-caching-2024-07-31"],
+                    system=[
+                        {
+                            "type": "text",
+                            "text": SYSTEM_PROMPT,
+                            "cache_control": {"type": "ephemeral"},
+                        }
+                    ],
                     tools=[
                         {
                             "type": "web_search_20260209",
                             "name": "web_search",
+                            "max_uses": 5,
                             "user_location": {
                                 "type": "approximate",
                                 "country": "GB",
