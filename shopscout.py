@@ -94,6 +94,7 @@ def research_product(query: str) -> str:
                             "type": "web_search_20260209",
                             "name": "web_search",
                             "max_uses": 5,
+                            "allowed_callers": ["direct"],
                             "user_location": {
                                 "type": "approximate",
                                 "country": "GB",
