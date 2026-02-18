@@ -86,7 +86,7 @@ def research_product(query: str) -> str:
         for attempt in range(3):
             try:
                 response = client.beta.messages.create(
-                    model="claude-sonnet-4-6",
+                    model="claude-haiku-4-5-20251001",
                     max_tokens=2000,
                     betas=["prompt-caching-2024-07-31"],
                     system=[
