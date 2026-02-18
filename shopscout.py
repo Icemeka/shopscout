@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -81,29 +82,38 @@ def research_product(query: str) -> str:
         import anthropic
 
         client = anthropic.Anthropic(api_key=api_key)
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            tools=[
-                {
-                    "type": "web_search_20260209",
-                    "name": "web_search",
-                    "user_location": {
-                        "type": "approximate",
-                        "country": "GB",
-                        "city": "London",
-                        "timezone": "Europe/London",
-                    },
-                }
-            ],
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"Research and compare prices for: {query.strip()}",
-                }
-            ],
-        )
+
+        for attempt in range(3):
+            try:
+                response = client.messages.create(
+                    model="claude-sonnet-4-6",
+                    max_tokens=4096,
+                    system=SYSTEM_PROMPT,
+                    tools=[
+                        {
+                            "type": "web_search_20260209",
+                            "name": "web_search",
+                            "user_location": {
+                                "type": "approximate",
+                                "country": "GB",
+                                "city": "London",
+                                "timezone": "Europe/London",
+                            },
+                        }
+                    ],
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": f"Research and compare prices for: {query.strip()}",
+                        }
+                    ],
+                )
+                break
+            except anthropic.RateLimitError:
+                if attempt < 2:
+                    time.sleep(30)
+                else:
+                    return "ShopScout is temporarily rate-limited. Please try again in a minute."
 
         # web_search_20260209 is server-side — API handles execution, returns end_turn directly
         text_parts = [
