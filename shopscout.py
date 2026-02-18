@@ -121,7 +121,12 @@ def research_product(query: str) -> str:
             for block in response.content
             if hasattr(block, "text") and block.type == "text"
         ]
-        return "\n".join(text_parts) if text_parts else "(No results returned)"
+        full_text = "\n".join(text_parts)
+
+        # Strip any preamble before the structured report
+        marker = "SHOPSCOUT RESULTS"
+        idx = full_text.find(marker)
+        return full_text[idx:].strip() if idx != -1 else full_text.strip() or "(No results returned)"
 
     except Exception as e:
         return f"ShopScout error: {e}"
