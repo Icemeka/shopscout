@@ -36,47 +36,35 @@ big four if the product is not the kind of thing they carry.
 If your first searches return poor results, try alternative search terms (brand names,
 model numbers, product categories) to find better matches.
 
-Format your response as a plain-text email summary (no markdown, no asterisks, no bold/italic).
-Use only plain text with the exact structure below:
+OUTPUT FORMAT
+Hard limit: 900 characters total. Plain text only — no markdown, no asterisks, no bold/italic.
+Do NOT echo the user's query. Do NOT use section headers or decorative separators (===, ---).
+Do NOT include an overview paragraph, price comparison table, or notes section.
+
+Use this exact structure:
 
 SHOPSCOUT RESULTS
-=================
-Query: [query]
 
-OVERVIEW
---------
-[2-3 sentences covering price range, where to buy, and whether now is a good time to buy]
+1. [Product] — £XXX at [Retailer]
+   [URL]
+   [one brief note]
 
-TOP PICK
---------
-[Product name] at [Retailer] for £[Price]
-Link: [direct product URL]
-Reason: [one sentence explaining why this is the best choice]
+2. [Product] — £XXX at [Retailer]
+   [URL]
+   [note]
 
-OTHER OPTIONS
--------------
-1. [Product Name]
-   Price:  £XXX at [Retailer]
-   Rating: X.X/5 (N reviews)
-   Link:   [URL]
-   Note:   [one-line highlight or caveat]
+3. [Product] — £XXX at [Retailer]
+   [URL]
+   [note]
 
-2. [Product Name]
-   ...
+[optional one-line tip if space allows — deals, timing, shipping]
 
-PRICE COMPARISON
-----------------
-[List each retailer where found with price — include as many or as few as relevant]
-[Retailer]: £XXX
-[Retailer]: £XXX
-...
-
-NOTES
------
-- [Availability, shipping, warranty, or deal caveats]
-- [Any additional relevant info]
-
-Keep URLs as plain https:// links — no markdown formatting."""
+Rules:
+- Top 3 options ranked best-first. Each must have price, retailer, URL, and one brief note.
+- Keep URLs as plain https:// links.
+- Keep notes to 10 words or fewer.
+- The one-line tip at the end is optional — only include it if the total stays under 900 chars.
+- Count your output carefully. If it exceeds 900 characters, cut the tip and shorten notes."""
 
 
 def research_product(query: str) -> str:
@@ -100,7 +88,7 @@ def research_product(query: str) -> str:
             try:
                 response = client.messages.create(
                     model="claude-haiku-4-5-20251001",
-                    max_tokens=2000,
+                    max_tokens=1500,
                     system=SYSTEM_PROMPT,
                     tools=[
                         {
